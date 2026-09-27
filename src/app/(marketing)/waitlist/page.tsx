@@ -1,6 +1,19 @@
 'use client';
 
 import { useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
+import {
+  AlertTriangle,
+  Banknote,
+  Check,
+  ChevronDown,
+  ClipboardCheck,
+  GraduationCap,
+  Loader2,
+  Megaphone,
+  UserCog,
+  UsersRound,
+  type LucideIcon,
+} from 'lucide-react';
 
 // ---------------------------------------------------------------------------
 // Google Form integration
@@ -24,13 +37,13 @@ const ENTRY_GOAL = 'entry.1876744323';
 const ROLE_OPTIONS = ['Proprietor', 'Principal', 'Teacher', 'Other'];
 const STUDENT_RANGE_OPTIONS = ['Under 100', '100-300', '300-600', '600+'];
 
-const FEATURES = [
-  { icon: '🎓', title: 'Student records & promotion', desc: 'Admissions, classes and end-of-term promotion without retyping a single list.' },
-  { icon: '👨‍🏫', title: 'Staff accounts & roles', desc: 'Principals, teachers and bursars each get a login with the right permissions.' },
-  { icon: '₦', title: 'Fee collection in Naira', desc: 'Invoices, payments and outstanding balances — see who has paid at a glance.' },
-  { icon: '📊', title: 'Grades & report cards', desc: 'Continuous assessment scores and termly report cards, ready to print or share.' },
-  { icon: '📣', title: 'Announcements', desc: 'Post an update once and reach staff and parents — no separate WhatsApp groups.' },
-  { icon: '👨‍👩‍👧', title: 'Parent portal', desc: 'Parents check results, fees and attendance from any phone, anytime.' },
+const FEATURES: { icon: LucideIcon; title: string; desc: string }[] = [
+  { icon: GraduationCap, title: 'Student records & promotion', desc: 'Admissions, classes and end-of-term promotion without retyping a single list.' },
+  { icon: UserCog, title: 'Staff accounts & roles', desc: 'Principals, teachers and bursars each get a login with the right permissions.' },
+  { icon: Banknote, title: 'Fee collection in Naira', desc: 'Invoices, payments and outstanding balances — see who has paid at a glance.' },
+  { icon: ClipboardCheck, title: 'Grades & report cards', desc: 'Continuous assessment scores and termly report cards, ready to print or share.' },
+  { icon: Megaphone, title: 'Announcements', desc: 'Post an update once and reach staff and parents — no separate WhatsApp groups.' },
+  { icon: UsersRound, title: 'Parent portal', desc: 'Parents check results, fees and attendance from any phone, anytime.' },
 ];
 
 const PERKS = [
@@ -42,7 +55,6 @@ const PERKS = [
 type FieldKey = 'fullName' | 'schoolName' | 'role' | 'phone' | 'email' | 'students' | 'goal';
 
 const FIELD_ORDER: FieldKey[] = ['fullName', 'schoolName', 'role', 'phone', 'email', 'students', 'goal'];
-const REQUIRED_FIELDS: FieldKey[] = ['fullName', 'schoolName', 'role', 'phone', 'email', 'students'];
 
 type Values = Record<FieldKey, string>;
 type Errors = Partial<Record<FieldKey, string>>;
@@ -108,19 +120,9 @@ function SelectField({ id, label, value, error, options, onChange, className = '
           <option value="">Select…</option>
           {options.map(o => <option key={o} value={o}>{o}</option>)}
         </select>
-        <svg className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B]" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M4 6.5 8 10.5l4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#64748B]" aria-hidden="true" />
       </div>
     </Field>
-  );
-}
-
-function CheckIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
   );
 }
 
@@ -207,9 +209,6 @@ export default function WaitlistPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="mx-auto max-w-6xl px-5 pt-16 pb-14 lg:pt-24 lg:pb-20 text-center">
-          <span className="inline-block text-[11px] font-bold uppercase tracking-wider text-[#0E7490] bg-[#E6F3F6] rounded-full px-3 py-1">
-            Built for Nigerian schools
-          </span>
           <h1 className="mt-6 mx-auto max-w-3xl text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-[#0D2B55] leading-[1.12]">
             Retire the paper registers and spreadsheets.
           </h1>
@@ -235,8 +234,8 @@ export default function WaitlistPage() {
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {FEATURES.map(f => (
               <div key={f.title} className="bg-white border border-[#DDE5F0] rounded-xl p-5 hover:shadow-sm transition-shadow">
-                <div className="w-10 h-10 rounded-lg bg-[#E6F3F6] flex items-center justify-center text-lg text-[#0E7490] font-bold">
-                  {f.icon}
+                <div className="w-10 h-10 rounded-lg bg-[#E6F3F6] flex items-center justify-center text-[#0E7490]">
+                  <f.icon className="w-5 h-5" strokeWidth={1.75} aria-hidden="true" />
                 </div>
                 <h3 className="mt-3.5 text-sm font-bold text-[#0D2B55]">{f.title}</h3>
                 <p className="mt-1.5 text-xs text-[#64748B] leading-relaxed">{f.desc}</p>
@@ -262,7 +261,7 @@ export default function WaitlistPage() {
                 {PERKS.map(p => (
                   <li key={p} className="flex items-start gap-3 text-sm text-[#0D2B55]">
                     <span className="mt-0.5 w-5 h-5 shrink-0 rounded-full bg-[#E6F3F6] text-[#0E7490] flex items-center justify-center">
-                      <CheckIcon className="w-3 h-3" />
+                      <Check className="w-3 h-3" strokeWidth={3} aria-hidden="true" />
                     </span>
                     {p}
                   </li>
@@ -274,7 +273,7 @@ export default function WaitlistPage() {
               {done ? (
                 <div className="bg-white border border-[#DDE5F0] rounded-xl p-7 sm:p-9 text-center">
                   <div className="mx-auto w-12 h-12 rounded-full bg-[#E6F3F6] text-[#0E7490] flex items-center justify-center">
-                    <CheckIcon className="w-6 h-6" />
+                    <Check className="w-6 h-6" strokeWidth={2.5} aria-hidden="true" />
                   </div>
                   <h3 className="mt-4 text-xl font-bold text-[#0D2B55]">You&apos;re on the list</h3>
                   <p className="mt-2 text-sm text-[#64748B] leading-relaxed">
@@ -293,7 +292,7 @@ export default function WaitlistPage() {
 
                   {submitError && (
                     <div role="alert" className="mt-4 flex items-start gap-2 rounded-lg border border-[#FECACA] bg-[#FEE2E2] px-3 py-2.5 text-xs text-[#B91C1C]">
-                      <span aria-hidden="true">⚠️</span>
+                      <AlertTriangle className="w-4 h-4 shrink-0 mt-px" aria-hidden="true" />
                       <div>
                         <p>{submitError}</p>
                         <button type="submit" className="mt-1 font-bold underline cursor-pointer">
@@ -356,12 +355,7 @@ export default function WaitlistPage() {
                     disabled={submitting}
                     className="mt-5 w-full h-12 rounded-xl bg-[#0E7490] text-white text-sm font-bold hover:bg-[#0B5C72] disabled:opacity-60 transition-colors cursor-pointer inline-flex items-center justify-center gap-2"
                   >
-                    {submitting && (
-                      <svg className="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" className="opacity-25" />
-                        <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-                      </svg>
-                    )}
+                    {submitting && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />}
                     {submitting ? 'Sending…' : 'Join the waitlist'}
                   </button>
                   <p className="mt-3 text-[11px] text-[#94A3B8] text-center">
